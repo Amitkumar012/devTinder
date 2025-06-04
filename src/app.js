@@ -1,36 +1,37 @@
 
+
 const express = require('express');
 
 const app = express();
 
-app.use("/route", rH, [rH2, rH3], rH4, rH)
+app.post("/user/login",(req,res) => {
+    res.send("User logged in successfully");
+})
 
-app.use(
-  "/user",
- [(req, res, next) => {
-    console.log("Handling the route user")
-    next();
-    
-    
- },
- (req,res, next) => {
-    console.log("Handling the route user 2")
-    res.send("2 Response")
-    next()
- },
- (req,res, next) => {
-    console.log("Handling the route user 3")
-    res.send("3 Response")
-    next()
- },
- (req,res, next) => {
-    console.log("Handling the route user 4")
-    res.send("4 Response")
-    next()
- }
+const { adminAuth , userAuth } = require("./middlewares/auth"); 
+  // handle Auth Middleware for all GET,POST....
+app.use("/admin", adminAuth );
+app.use("/admin", userAuth );
+app.use("/user/data", adminAuth, (req,res) =>{
+    console.log("Data sent successfully" );
+    res.send("data sent")
+});
 
-]);
+app.options("/user/delete", adminAuth,(req,res) => {
+    res.send("Data deleted already")
+})
 
+app.get("/user", userAuth, (req,res) => { 
+    res.send("User data send");    
+}); 
+
+app.get("/admin/getAllData", (req,res) => { 
+    res.send("all data send");    
+});
+
+app.get("/admin/deleteUser", (req,res) => {
+        res.send("Deleted a user ");   
+});
 
 app.listen(7777, () => {
     console.log("Server is running successfully on port 7777");

@@ -1,25 +1,56 @@
 
 const mongoose = require("mongoose");
 
+
+
 const userSchema = new mongoose.Schema({
     firstName: {
-        type: String
+        type: String,
+        required: true,
+        minLength: 4,
+        maxLength: 100,
     },
     lastName: {
-        type: String
+        type: String,
+        
     },
     emailId: {
-        type: String
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        trim: true,
     },
     password: {
-        type: String
+        type: String,
+        required: true,
     },
     age: {
-        type: String
+        type: String,
+        min: 18,
     },
     gender: {
-        type: String
-    }
+        type: String,
+        validate(value){
+            if(!["male","female","others"].includes(value)) {
+                throw new Error("Gender data is not valid");
+            }
+        }, 
+    },
+    photoUrl:{
+        type: String,
+        default:"https://www.google.com/imgres?q=dummy%20full%20user%20profile%20picture&imgurl=http%3A%2F%2Fhancockogundiyapartners.com%2Fwp-content%2Fuploads%2F2019%2F07%2Fdummy-profile-pic-300x300.jpg&imgrefurl=http%3A%2F%2Fhancockogundiyapartners.com%2Fmanagement%2Fdummy-profile-pic-300x300%2F&docid=Wprl4053WgGqDM&tbnid=KOplAU0T2gzb9M&vet=12ahUKEwiX_pnuhNqNAxX61jgGHQGwK1YQM3oECC4QAA..i&w=300&h=300&hcb=2&ved=2ahUKEwiX_pnuhNqNAxX61jgGHQGwK1YQM3oECC4QAA"
+    },
+    about: {
+        type: String,
+        default: "This is a default about of the user",
+    },
+    skills: {
+        type: [String],
+    },
+},
+{
+    timestamps: true,
 });
 
 

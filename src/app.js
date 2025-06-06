@@ -3,18 +3,33 @@ const express = require('express');
 const connectDB= require("./config/database")
 const app = express();
 const User = require("./models/user");
+const {validateSignUpData} = require("./utils/validation");
+const bcrypt = require("bcrypt");
 
 app.use(express.json());
 
 app.post("/signup", async (req,res) => {
+    try{//Validation of Data
+        validateSignUpData(req);
+
+        const {firstName,lastName,emailId,password} = req.body;
+        // Encrypt the password
+        const passwordHash = await bcrypt.hash(password, 10);
+        console.log(passwordHash)
+        
+        //Creating a new instance of the user model
+        const user = new User({
+            firstName,
+            lastName,
+            emailId,
+            password: passwordHash,
+        });
+
     
-    //Creating a new instance of the user model
-    const user = new User(req.body );
-    try{
         await user.save();
-    res.send("User Added Successfully")
-    } catch (err) {
-        res.status(400).send("Error saving the user:" + err.message);
+        res.send("User Added Successfully")
+    }   catch (err) {
+        res.status(400).send("ERROR : " + err.message);
     }
     
 });
@@ -75,8 +90,24 @@ app.delete("/user",async(req,res) => {
 app.patch("/user",async(req,res) => {
     const userId = req.body.userId;
     const data = req.body;
-      
+
+    
     try{
+        const ALLOWED_UPDATES = [
+        "photoUrl",
+        "about",
+        "gender",
+        "age",
+        "skills",
+        "userId"
+    ]
+     
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+         ALLOWED_UPDATES.includes(k)
+    );
+    if(!isUpdateAllowed){
+        throw new Error("Updates not allowed")
+    }
         const user = await User.findByIdAndUpdate({_id: userId }, data, {
             returnDocument: "after",
             runValidators: true,

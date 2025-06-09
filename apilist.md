@@ -6,16 +6,16 @@ authRouter
 - POST /login
 - POST /logout
 
-profileRouter
+# profileRouter
 - GET /profile/view
 -PATCH /profile/edit
-- PATCH /profile/password
+- PATCH /profile/password // Forget password API
  
- connectionRequestRouter
-- POST /request/send/intrested/userId
-- POST /request/send/ignore/userId
-- POST /request/review/accepted/requestId
-- POST /request/review/rejected/requestId
+ # connectionRequestRouter
+- POST /request/send/:status/:userId
+- POST /request/send/ignore/:userId
+- POST /request/review/accepted/:requestId
+- POST /request/review/rejected/:requestId
 
 userRouter
 - GET /user/connections

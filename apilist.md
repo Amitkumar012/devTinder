@@ -13,7 +13,8 @@ authRouter
  
  # connectionRequestRouter
 - POST /request/send/:status/:userId
-- POST /request/send/ignore/:userId
+- POST /request/review/:status/:requestId
+
 - POST /request/review/accepted/:requestId
 - POST /request/review/rejected/:requestId
 

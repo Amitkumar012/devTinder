@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema({
     },
     photoUrl:{
         type: String,
-        default:"https://www.google.com/imgres?q=dummy%20full%20user%20profile%20picture&imgurl=http%3A%2F%2Fhancockogundiyapartners.com%2Fwp-content%2Fuploads%2F2019%2F07%2Fdummy-profile-pic-300x300.jpg&imgrefurl=http%3A%2F%2Fhancockogundiyapartners.com%2Fmanagement%2Fdummy-profile-pic-300x300%2F&docid=Wprl4053WgGqDM&tbnid=KOplAU0T2gzb9M&vet=12ahUKEwiX_pnuhNqNAxX61jgGHQGwK1YQM3oECC4QAA..i&w=300&h=300&hcb=2&ved=2ahUKEwiX_pnuhNqNAxX61jgGHQGwK1YQM3oECC4QAA"
+        default:"https://t4.ftcdn.net/jpg/02/44/43/69/360_F_244436923_vkMe10KKKiw5bjhZeRDT05moxWcPpdmb.jpg"
     },
     about: {
         type: String,

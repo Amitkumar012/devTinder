@@ -1,7 +1,8 @@
 
 const express = require("express");
-const {userAuth} = require("../middlewares/auth");
 const profileRouter = express.Router();
+
+const {userAuth} = require("../middlewares/auth");
 
 const {validateProfileEditData } = require("../utils/validation") 
 
@@ -27,12 +28,12 @@ profileRouter.patch("/profile/edit", userAuth,async (req,res)=>{
 
         const loggedInuser = req.user;
         
-        Object.keys(req.body).forEach(key => (loggedInuser[key] = req.body[key]));
-        await loggedInuser.save();
+        Object.keys(req.body).forEach(key => (loggedInUser[key] = req.body[key]));
+        await loggedInUser.save();
         
         res.json({ 
             message :  "Your profile udated successfully" ,
-            data: loggedInuser,
+            data: loggedInUser,
         })
     }
     catch(err){

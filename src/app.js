@@ -5,8 +5,13 @@ const app = express();
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const cors = require("cors");
 
 
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+}))
 app.use(express.json());
 app.use(cookieParser());
 
@@ -27,6 +32,7 @@ connectDB()
     console.log("Server is running successfully on port 7777");
 });
     })
-    .catch((err) => {
+    .catch((err) => { 
         console.error("Database cannot be connected!!")
     });
+ 

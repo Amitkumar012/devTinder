@@ -26,6 +26,7 @@ profileRouter.patch("/profile/edit", userAuth,async (req,res)=>{
 
         }
 
+        console.log("req.user:", req.user);
         const loggedInUser = req.user;
         
         Object.keys(req.body).forEach(key => (loggedInUser[key] = req.body[key]));

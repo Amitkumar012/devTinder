@@ -33,7 +33,8 @@ authRouter.post("/signup", async (req,res) => {
     }   catch (err) {
         res.status(400).send("ERROR : " + err.message);
     }
-    
+
+
 });
 
 

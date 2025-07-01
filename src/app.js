@@ -1,5 +1,6 @@
-
+require("dotenv").config();
 const express = require('express');
+
 const connectDB= require("./config/database")
 const app = express();
 const bcrypt = require("bcrypt");
@@ -28,7 +29,7 @@ app.use("/",userRouter);
 connectDB()
     .then(() => {
         console.log("Database connection established...")
-        app.listen(7777, () => {
+        app.listen(process.env.PORT, () => {
     console.log("Server is running successfully on port 7777");
 });
     })

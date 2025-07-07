@@ -7,6 +7,10 @@ const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
+const http = require("http");
+const initializeSocket = require("./utils/socket")
+const chatRouter = require("./routes/chat")
+
 
 require("./utils/cronjob");
 
@@ -26,12 +30,21 @@ const userRouter = require("./routes/user");
 app.use("/",authRouter);
 app.use("/",profileRouter);
 app.use("/",requestRouter);
-app.use("/",userRouter); 
+app.use("/",userRouter);
+app.use("/",chatRouter);
+
+
+const server = http.createServer(app)
+initializeSocket(server);
+
+server.listen(7777, () => {
+  console.log("✅ Socket.IO server running at http://localhost:7777");
+});
 
 connectDB()
     .then(() => {
         console.log("Database connection established...")
-        app.listen(process.env.PORT, () => {
+        server.listen(process.env.PORT, () => {
     console.log("Server is running successfully on port 7777");
 });
     })

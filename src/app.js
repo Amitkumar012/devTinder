@@ -10,6 +10,8 @@ const cors = require("cors");
 const http = require("http");
 const initializeSocket = require("./utils/socket")
 const chatRouter = require("./routes/chat")
+const statusRouter = require("./routes/status");
+
 
 
 require("./utils/cronjob");
@@ -32,14 +34,13 @@ app.use("/",profileRouter);
 app.use("/",requestRouter);
 app.use("/",userRouter);
 app.use("/",chatRouter);
+app.use("/", statusRouter);
 
 
 const server = http.createServer(app)
 initializeSocket(server);
 
-server.listen(7777, () => {
-  console.log("✅ Socket.IO server running at http://localhost:7777");
-});
+
 
 connectDB()
     .then(() => {

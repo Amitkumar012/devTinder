@@ -3,6 +3,8 @@ const socket = require("socket.io");
 const crypto = require("crypto");
 const {Chat} = require("../models/chat");
 const ConnectionRequest = require("../models/connectionRequest");
+const user = require("../models/user")
+
 
 const getSecretRoomId = (userId, targetUserId) => {
     return crypto
@@ -19,7 +21,20 @@ const initializeSocket = (server) => {
     })
 
     io.on("connection", (socket)=>{
+        console.log("Socket connected:", socket.id);
+    console.log("Query data:", socket.handshake.query);
         // Handle events
+        const userId = socket.handshake.query.userId;
+        if (userId) {
+            // User is online
+            user.findByIdAndUpdate(userId, { isOnline: true }).exec();
+            socket.broadcast.emit("userStatus", {
+            userId,
+            isOnline: true,
+            lastSeen: null,
+        });
+
+
 
         socket.on("joinChat", ({ firstName, userId, targetUserId})=>{
             const roomId = getSecretRoomId(userId, targetUserId)
@@ -36,6 +51,9 @@ const initializeSocket = (server) => {
 
                     let chat = await Chat.findOne({
                         participants: { $all: [userId, targetUserId]},
+                    }).populate({
+                        path: "messages.senderId",
+                        select: "firstName lastName",
                     })
 
                     // Check if userId & targetUserId are friends....
@@ -49,13 +67,22 @@ const initializeSocket = (server) => {
                         });
                     }
 
-                    chat.messages.push({
+                    const newMessage = {
                         senderId: userId,
                         text,
-                    });
+                        createdAt: new Date(),
+                    };
+                    chat.messages.push(newMessage);
+                    
 
                     await chat.save();
-                    io.to(roomId).emit("messageRecieved", { firstName, lastName ,text })
+                    io.to(roomId).emit("messageRecieved", {
+                        firstName,
+                        lastName,
+                        text,
+                        createdAt: newMessage.createdAt,
+                        senderId: userId,
+                    })
 
                 }catch (err) {
                     console.log(err)
@@ -63,10 +90,27 @@ const initializeSocket = (server) => {
 
 
         });
-        socket.on("disconnect", () =>{
+        socket.on("disconnect", async () =>{
+            const lastSeen = new Date();
+            console.log(`Disconnect received for ${userId} at ${lastSeen}`);
+
+            const result = await user.findByIdAndUpdate(userId,{
+                isOnline: false,
+                lastSeen,
+
+            });
+            socket.broadcast.emit("userStatus", {
+                userId,
+                isOnline: false,
+                lastSeen,
+            })
+
+            console.log(`User ${userId} disconnected.`);
+
+        });
+    }
     });
-})
+};
 
-}
-
+    
 module.exports = initializeSocket;

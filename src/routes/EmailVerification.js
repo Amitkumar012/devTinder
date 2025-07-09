@@ -20,10 +20,8 @@ transporter.verify((error, success) => {
 
 // Send verification email
 const sendVerificationEmail = async ({ _id, emailId }) => {
-  const currentUrl =
-    process.env.NODE_ENV === "development"
-      ? process.env.BASE_URL || "http://localhost:7777"
-      : process.env.BASE_URL || "https://cunect.me";
+  const currentUrl = process.env.BASE_URL || "https://cunect.me";
+
 
   const uniqueString = uuidv4() + _id;
   const mailOptions = {

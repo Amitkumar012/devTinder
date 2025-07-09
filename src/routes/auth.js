@@ -4,7 +4,8 @@ const authRouter = express.Router();
 const {validateSignUpData} = require("../utils/validation");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
-
+const { sendVerificationEmail } = require("../routes/EmailVerification")
+const UserVerification = require("../models/UserVerification")
 
 authRouter.post("/signup", async (req,res) => { 
     try{//Validation of Data
@@ -21,20 +22,47 @@ authRouter.post("/signup", async (req,res) => {
             lastName,
             emailId,
             password: passwordHash,
+            verified: false,
         });
 
         const savedUser = await user.save();
-        const token = await savedUser.getJWT();
-
-            res.cookie("token", token);
+        await sendVerificationEmail(savedUser);
+        
 
         
-        res.json({ message: "User Added Successfully", data: savedUser})
-    }   catch (err) {
+         res.status(201).json({ message: "User created. Check email to verify." });
+    } catch (err) {
         res.status(400).send("ERROR : " + err.message);
     }
+});
 
+authRouter.get("/verify/:userId/:uniqueString", async (req, res) => {
+    console.log("Verification route hit");
+    const { userId, uniqueString } = req.params;
 
+    try {
+        const record = await UserVerification.findOne({ userId });
+        if (!record) throw new Error("Invalid or expired verification link");
+
+        const { expiresAt, uniqueString: hashed } = record;
+
+        if (expiresAt < Date.now()) {
+            await UserVerification.deleteOne({ userId });
+            await User.deleteOne({ _id: userId });
+            return res.redirect(`${process.env.FRONTEND_URL}/verified?error=true&message=${encodeURIComponent("Link expired")}`);
+        }
+
+        const match = await bcrypt.compare(uniqueString, hashed);
+        if (!match) throw new Error("Invalid verification link");
+
+        await User.updateOne({ _id: userId }, { verified: true });
+        await UserVerification.deleteOne({ userId });
+        console.log("🔁 Redirecting to:", `${process.env.FRONTEND_URL}/verified?error=false&message=Email verified successfully!`);
+        res.redirect(`${process.env.FRONTEND_URL}/verified?error=false&message=${encodeURIComponent("Email verified successfully!")}`);
+    } catch (error) {
+        console.log("🔁 Redirecting not to:", `${process.env.FRONTEND_URL}/verified?error=false&message=Email verified successfully!`);
+        res.redirect(`${process.env.FRONTEND_URL}/verified?error=true&message=${encodeURIComponent(error.message)}`);
+    }
 });
 
 
@@ -49,12 +77,14 @@ authRouter.post("/login", async (req,res) => {
         const isPasswordValid = await user.validatePassword(password)
 
         if(isPasswordValid){
+            if (!user.verified) {
+                throw new Error("Please verify your email before logging in.");
+            }
 
             const token = await user.getJWT();
-
             res.cookie("token", token);
-
             res.send(user);
+
         }
         else{
             throw new Error ("Invalid credential"); 

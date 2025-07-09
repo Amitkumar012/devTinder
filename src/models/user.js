@@ -55,6 +55,7 @@ const userSchema = new mongoose.Schema({
     skills: {
         type: [String],
     },
+    verified: Boolean,
     isOnline: { type: Boolean, default: false },
     lastSeen: { type: Date, default:null },    
 },{

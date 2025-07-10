@@ -30,7 +30,7 @@ const sendVerificationEmail = async ({ _id, emailId }) => {
     subject: "Verify Your Email",
     html: `<p>Verify your email address to complete signup.</p>
            <p>This link expires in 6 hours.</p>
-           <p>Click <a href="${currentUrl}/api/users/verify/${_id}/${uniqueString}">here</a> to verify.</p>`,
+           <p>Click <a href="${currentUrl}/verify/${_id}/${uniqueString}">here</a> to verify.</p>`,
   };
 
   try {

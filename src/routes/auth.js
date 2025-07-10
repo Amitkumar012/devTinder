@@ -54,6 +54,7 @@ authRouter.get("/verify/:userId/:uniqueString", async (req, res) => {
 
         const match = await bcrypt.compare(uniqueString, hashed);
         if (!match) throw new Error("Invalid verification link");
+        console.log("✔ Updating user verified flag in DB...");
 
         const updatedUser = await User.findByIdAndUpdate(
             userId,

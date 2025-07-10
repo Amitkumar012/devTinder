@@ -55,12 +55,17 @@ authRouter.get("/verify/:userId/:uniqueString", async (req, res) => {
         const match = await bcrypt.compare(uniqueString, hashed);
         if (!match) throw new Error("Invalid verification link");
 
-        await User.updateOne({ _id: userId }, { verified: true });
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { verified: true },
+            { new: true }
+        );
+        if (!updatedUser) throw new Error("User not found after update");
         await UserVerification.deleteOne({ userId });
-        console.log("🔁 Redirecting to:", `${process.env.FRONTEND_URL}/verified?error=false&message=Email verified successfully!`);
+        console.log("✅ Verified user:", updatedUser.emailId);
         res.redirect(`${process.env.FRONTEND_URL}/verified?error=false&message=${encodeURIComponent("Email verified successfully!")}`);
     } catch (error) {
-        console.log("🔁 Redirecting not to:", `${process.env.FRONTEND_URL}/verified?error=false&message=Email verified successfully!`);
+        console.log("❌ Verification failed:", error.message);
         res.redirect(`${process.env.FRONTEND_URL}/verified?error=true&message=${encodeURIComponent(error.message)}`);
     }
 });

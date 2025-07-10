@@ -61,6 +61,7 @@ authRouter.get("/verify/:userId/:uniqueString", async (req, res) => {
             { verified: true },
             { new: true }
         );
+        console.log("✅ Verified user:", updatedUser);
         if (!updatedUser) throw new Error("User not found after update");
         await UserVerification.deleteOne({ userId });
         console.log("✅ Verified user:", updatedUser.emailId);

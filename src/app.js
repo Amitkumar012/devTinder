@@ -18,7 +18,7 @@ require("./utils/cronjob");
 
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://cunect.me"],
     credentials: true,
 }))
 app.use(express.json());

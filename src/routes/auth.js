@@ -72,10 +72,10 @@ authRouter.get("/verify/:userId/:uniqueString", async (req, res) => {
         await UserVerification.deleteOne({ userId });
         console.log("✅ Verified user:", updatedUser.emailId);
         console.log("🌐 Redirecting to:", `${process.env.FRONTEND_URL}/verified`);
-        res.redirect(`${process.env.FRONTEND_URL}/verified?error=false&message=${encodeURIComponent("Email verified successfully!")}`);
+        res.redirect(`https://cunect.me/verified?error=false&message=${encodeURIComponent("Email verified successfully!")}`);
     } catch (error) {
         console.log("❌ Verification failed:", error.message);
-        res.redirect(`${process.env.FRONTEND_URL}/verified?error=true&message=${encodeURIComponent(error.message)}`);
+        res.redirect(`https://cunect.me/verified?error=true&message=${encodeURIComponent(error.message)}`);
     }
 });
 

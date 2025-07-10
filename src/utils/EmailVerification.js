@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 
 const UserVerification = require("../models/UserVerification");
+
 require("dotenv").config();
 
 let transporter = nodemailer.createTransport({

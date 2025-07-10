@@ -5,7 +5,10 @@ const {validateSignUpData} = require("../utils/validation");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const { sendVerificationEmail } = require("../utils/EmailVerification")
+
 const UserVerification = require("../models/UserVerification")
+
+require("dotenv").config();
 
 authRouter.post("/signup", async (req,res) => { 
     try{//Validation of Data
@@ -68,6 +71,7 @@ authRouter.get("/verify/:userId/:uniqueString", async (req, res) => {
         
         await UserVerification.deleteOne({ userId });
         console.log("✅ Verified user:", updatedUser.emailId);
+        console.log("🌐 Redirecting to:", `${process.env.FRONTEND_URL}/verified`);
         res.redirect(`${process.env.FRONTEND_URL}/verified?error=false&message=${encodeURIComponent("Email verified successfully!")}`);
     } catch (error) {
         console.log("❌ Verification failed:", error.message);

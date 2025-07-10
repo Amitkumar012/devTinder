@@ -22,7 +22,7 @@ transporter.verify((error, success) => {
 
 // Send verification email
 const sendVerificationEmail = async ({ _id, emailId }) => {
-  const currentUrl = "process.env.BACKEND_URL";
+  const backendUrl = "process.env.BACKEND_URL";
 
 
   const uniqueString = uuidv4() + _id;

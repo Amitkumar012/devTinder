@@ -22,17 +22,19 @@ transporter.verify((error, success) => {
 
 // Send verification email
 const sendVerificationEmail = async ({ _id, emailId }) => {
-  
+  const backendUrl = process.env.BACKEND_URL;
 
 
   const uniqueString = uuidv4() + _id;
+  const verificationLink = `${backendUrl}/verify/${_id}/${uniqueString}`;
   const mailOptions = {
     from: process.env.AUTH_EMAIL,
     to: emailId,
     subject: "Verify Your Email",
     html: `<p>Verify your email address to complete signup.</p>
            <p>This link expires in 6 hours.</p>
-           <p>Click <a href="http://13.201.122.87:7777/verify/${_id}/${uniqueString}">here</a> to verify.</p>`,
+           <p>Click <a href="${verificationLink}">Click here to verify your email</a>
+           to verify.</p>`,
   };
 
   try {

@@ -22,11 +22,11 @@ transporter.verify((error, success) => {
 
 // Send verification email
 const sendVerificationEmail = async ({ _id, emailId }) => {
-  const backendUrl = process.env.BACKEND_URL;
+  
 
 
   const uniqueString = uuidv4() + _id;
-  const verificationLink = `${backendUrl}/verify/${_id}/${uniqueString}`;
+  const verificationLink = `http://13.201.122.87:7777/verify/${_id}/${uniqueString}`;
   const mailOptions = {
     from: process.env.AUTH_EMAIL,
     to: emailId,

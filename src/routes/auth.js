@@ -4,13 +4,9 @@ const authRouter = express.Router();
 const {validateSignUpData} = require("../utils/validation");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
-<<<<<<< HEAD
 const { sendVerificationEmail } = require("../utils/EmailVerification")
 const UserVerification = require("../models/UserVerification")
-=======
-const { sendVerificationEmail } = require("../routes/EmailVerification")
-const UserVerification = require("../utils/EmailVerification")
->>>>>>> af56172 (pull)
+
 
 authRouter.post("/signup", async (req,res) => { 
     try{//Validation of Data
@@ -66,13 +62,10 @@ authRouter.get("/verify/:userId/:uniqueString", async (req, res) => {
             { verified: true },
             { new: true }
         );
-<<<<<<< HEAD
         console.log("✅ Verified user:", updatedUser);
         if (!updatedUser) throw new Error("User not found after update");
-=======
         if (!updatedUser) throw new Error("User not found after update");
         
->>>>>>> af56172 (pull)
         await UserVerification.deleteOne({ userId });
         console.log("✅ Verified user:", updatedUser.emailId);
         res.redirect(`${process.env.FRONTEND_URL}/verified?error=false&message=${encodeURIComponent("Email verified successfully!")}`);

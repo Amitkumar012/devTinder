@@ -17,6 +17,7 @@ chatRouter.get("/chat/:targetUserId", userAuth, async (req,res) => {
             participants: { $all: [userId, targetUserId] },
         }).populate({
             path: "messages.senderId",
+            model: "User",
             select: "firstName lastName"
         })
         if (!chat) {

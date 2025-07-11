@@ -15,10 +15,12 @@ const getSecretRoomId = (userId, targetUserId) => {
 
 const initializeSocket = (server) => {
     const io = socket(server, {
-        cors: {
-            origin: "http://localhost:5173",
-        },
-    })
+    cors: {
+        origin: ["http://localhost:5173", "https://cunect.me"],
+        credentials: true,
+    },
+    path: "/api/socket.io",
+});
 
     io.on("connection", (socket)=>{
         console.log("Socket connected:", socket.id);

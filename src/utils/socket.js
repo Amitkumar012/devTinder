@@ -45,16 +45,18 @@ const initializeSocket = (server) => {
             socket.join(roomId)
         });
 
-        socket.on("sendMessage", async ({  userId, targetUserId, text})=>{
+        socket.on("sendMessage", async ({ firstName , lastName, userId, targetUserId, text})=>{
            
                 //Save message to the Database
                 try{
                     const roomId = getSecretRoomId(userId, targetUserId)
-                    console.log(`Message from ${userId} to ${targetUserId}: ${text}`);
+                    console.log(firstName + " " + text)
 
                     let chat = await Chat.findOne({
                         participants: { $all: [userId, targetUserId]},
-                    
+                    }).populate({
+                        path: "messages.senderId",
+                        select: "firstName lastName",
                     })
 
                     // Check if userId & targetUserId are friends....
@@ -79,8 +81,8 @@ const initializeSocket = (server) => {
                     const sender = await user.findById(userId).select("firstName lastName");
 
                     io.to(roomId).emit("messageRecieved", {
-                        firstName: sender?.firstName || "Unknown",
-                        lastName: sender?.lastName || "",
+                        firstName,
+                        lastName,
                         text,
                         createdAt: newMessage.createdAt,
                         senderId: userId,
